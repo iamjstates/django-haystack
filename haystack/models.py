@@ -6,6 +6,7 @@ from django.utils.encoding import force_unicode
 from django.utils.text import capfirst
 from haystack.exceptions import NotHandled, SpatialError
 from haystack.utils import log as logging
+from django.utils.encoding import python_2_unicode_compatible
 
 try:
     from geopy import distance as geopy_distance
@@ -48,7 +49,7 @@ class SearchResult(object):
     def __repr__(self):
         return "<SearchResult: %s.%s (pk=%r)>" % (self.app_label, self.model_name, self.pk)
 
-    def __unicode__(self):
+    def __str__(self):
         return force_unicode(self.__repr__())
 
     def __getattr__(self, attr):

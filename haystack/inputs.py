@@ -1,6 +1,7 @@
 import re
 import warnings
 from django.utils.encoding import force_unicode
+from django.utils.encoding import python_2_unicode_compatible
 
 
 class BaseInput(object):
@@ -15,9 +16,9 @@ class BaseInput(object):
         self.kwargs = kwargs
 
     def __repr__(self):
-        return u"<%s '%s'>" % (self.__class__.__name__, self.__unicode__().encode('utf8'))
+        return u"<%s '%s'>" % (self.__class__.__name__, self.__str__().encode('utf8'))
 
-    def __unicode__(self):
+    def __str__(self):
         return force_unicode(self.query_string)
 
     def prepare(self, query_obj):

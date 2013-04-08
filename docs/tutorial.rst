@@ -40,6 +40,7 @@ note-taking application. Here is ``myapp/models.py``::
 
     from django.db import models
     from django.contrib.auth.models import User
+    from django.utils.encoding import python_2_unicode_compatible
 
 
     class Note(models.Model):
@@ -48,7 +49,7 @@ note-taking application. Here is ``myapp/models.py``::
         title = models.CharField(max_length=200)
         body = models.TextField()
 
-        def __unicode__(self):
+        def __str__(self):
             return self.title
 
 Finally, before starting with Haystack, you will want to choose a search

@@ -1,5 +1,6 @@
 import datetime
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 
 BREED_CHOICES = [
@@ -11,6 +12,7 @@ BREED_CHOICES = [
 ]
 
 
+@python_2_unicode_compatible
 class Dog(models.Model):
     breed = models.CharField(max_length=255, choices=BREED_CHOICES)
     name = models.CharField(max_length=255)
@@ -20,24 +22,25 @@ class Dog(models.Model):
     public = models.BooleanField(default=True)
     created = models.DateTimeField(default=datetime.datetime.now)
     updated = models.DateTimeField(default=datetime.datetime.now)
-    
-    def __unicode__(self):
+
+    def __str__(self):
         return self.full_name()
-    
+
     @models.permalink
     def get_absolute_url(self):
         return ('dog_detail', [], {'id': self.id})
-    
+
     def full_name(self):
         if self.owner_last_name:
             return u"%s %s" % (self.name, self.owner_last_name)
-        
+
         return self.name
 
 
+@python_2_unicode_compatible
 class Toy(models.Model):
     dog = models.ForeignKey(Dog, related_name='toys')
     name = models.CharField(max_length=60)
-    
-    def __unicode__(self):
+
+    def __str__(self):
         return u"%s's %s" % (self.dog.name, self.name)
