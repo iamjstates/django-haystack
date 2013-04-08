@@ -44,11 +44,14 @@ Haystack has a relatively easily-met set of requirements.
 
 * Python 2.5+
 * Django 1.3+
+* six
 
 Additionally, each backend has its own requirements. You should refer to
 http://docs.haystacksearch.org/dev/installing_search_engines.html for more
 details.
 
+Python 3 support has been added to this branch, six library was used to assist in
+compatibility. Six is located here: https://pypi.python.org/pypi/six
 
 Commercial Support
 ==================
