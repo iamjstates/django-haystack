@@ -59,7 +59,7 @@ class SearchField(object):
     @property
     def default(self):
         """Returns the default value for the field."""
-        if callable(self._default):
+        if isinstance(self._default, collections.Callable):
             return self._default()
 
         return self._default
@@ -97,7 +97,7 @@ class SearchField(object):
                     else:
                         raise SearchFieldError("The model '%s' has an empty model_attr '%s' and doesn't allow a default or null value." % (repr(obj), attr))
 
-            if callable(current_object):
+            if isinstance(self._default, collections.Callable):
                 return current_object()
 
             return current_object
