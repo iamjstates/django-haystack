@@ -1,4 +1,5 @@
 # "Hey, Django! Look at me, I'm an app! For Serious!"
+import six
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -162,7 +163,7 @@ class SearchResult(object):
             self.log.error("Model could not be found for SearchResult '%s'.", self)
             return u''
 
-        return unicode(self.model._meta)
+        return six.text_type(self.model._meta)
 
     def get_additional_fields(self):
         """

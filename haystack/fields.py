@@ -156,7 +156,7 @@ class CharField(SearchField):
         if value is None:
             return None
 
-        return unicode(value)
+        return six.text_type(value)
 
 
 class LocationField(SearchField):
@@ -265,7 +265,7 @@ class DecimalField(SearchField):
         if value is None:
             return None
 
-        return unicode(value)
+        return six.text_type(value)
 
 
 class BooleanField(SearchField):

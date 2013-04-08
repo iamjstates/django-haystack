@@ -331,6 +331,7 @@ choose. For instance, a (naive) user-created ``GeoPointField`` might look
 something like::
 
     from haystack import indexes
+    import six
 
     class GeoPointField(indexes.CharField):
         def __init__(self, **kwargs):
@@ -338,7 +339,7 @@ something like::
             super(GeoPointField, self).__init__(**kwargs)
 
         def prepare(self, obj):
-            return unicode("%s-%s" % (obj.latitude, obj.longitude))
+            return six.text_type("%s-%s" % (obj.latitude, obj.longitude))
 
 The ``prepare`` method simply returns the value to be used for that field. It's
 entirely possible to include data that's not directly referenced to the object
