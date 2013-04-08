@@ -1,7 +1,11 @@
 import re
 import warnings
-from django.utils.encoding import force_unicode
 from django.utils.encoding import python_2_unicode_compatible
+
+try:
+    from django.utils.encoding import force_text
+except ImportError:
+    from django.utils.encoding import force_unicode as force_text
 
 
 class BaseInput(object):
@@ -19,7 +23,7 @@ class BaseInput(object):
         return u"<%s '%s'>" % (self.__class__.__name__, self.__str__().encode('utf8'))
 
     def __str__(self):
-        return force_unicode(self.query_string)
+        return force_text(self.query_string)
 
     def prepare(self, query_obj):
         return self.query_string
