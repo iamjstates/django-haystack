@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import six
 from copy import deepcopy
 from time import time
 from django.conf import settings
@@ -564,7 +565,7 @@ class BaseSearchQuery(object):
 
         A basic (override-able) implementation is provided.
         """
-        if not isinstance(query_fragment, basestring):
+        if not isinstance(query_fragment, six.string_types):
             return query_fragment
 
         words = query_fragment.split()
