@@ -32,7 +32,7 @@ except ImportError:
 
 def clear_elasticsearch_index():
     # Wipe it clean.
-    print 'Clearing out Elasticsearch...'
+    print('Clearing out Elasticsearch...')
     raw_es = pyelasticsearch.ElasticSearch(settings.HAYSTACK_CONNECTIONS['default']['URL'])
     try:
         raw_es.delete_index(settings.HAYSTACK_CONNECTIONS['default']['INDEX_NAME'])
@@ -584,7 +584,7 @@ class LiveElasticsearchSearchQuerySetTestCase(TestCase):
         global lssqstc_all_loaded
 
         if lssqstc_all_loaded is None:
-            print 'Reloading data...'
+            print('Reloading data...')
             lssqstc_all_loaded = True
 
             # Wipe it clean.

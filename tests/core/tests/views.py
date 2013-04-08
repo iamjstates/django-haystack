@@ -101,7 +101,7 @@ class SearchViewTestCase(TestCase):
 
         class ThreadedSearchView(SearchView):
             def __call__(self, request):
-                print "Name: %s" % request.GET['name']
+                print("Name: %s" % request.GET['name'])
                 return super(ThreadedSearchView, self).__call__(request)
 
         view = search_view_factory(view_class=ThreadedSearchView)

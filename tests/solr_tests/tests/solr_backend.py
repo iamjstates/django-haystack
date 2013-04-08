@@ -33,7 +33,7 @@ except ImportError:
 
 def clear_solr_index():
     # Wipe it clean.
-    print 'Clearing out Solr...'
+    print('Clearing out Solr...')
     raw_solr = pysolr.Solr(settings.HAYSTACK_CONNECTIONS['default']['URL'])
     raw_solr.delete(q='*:*')
 
@@ -717,7 +717,7 @@ class LiveSolrSearchQuerySetTestCase(TestCase):
         global lssqstc_all_loaded
 
         if lssqstc_all_loaded is None:
-            print 'Reloading data...'
+            print('Reloading data...')
             lssqstc_all_loaded = True
 
             # Wipe it clean.

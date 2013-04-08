@@ -73,9 +73,9 @@ def do_update(backend, index, qs, start, end, total, verbosity=1):
 
     if verbosity >= 2:
         if hasattr(os, 'getppid') and os.getpid() == os.getppid():
-            print "  indexed %s - %d of %d." % (start + 1, end, total)
+            print("  indexed %s - %d of %d." % (start + 1, end, total))
         else:
-            print "  indexed %s - %d of %d (by %s)." % (start + 1, end, total, os.getpid())
+            print("  indexed %s - %d of %d (by %s)." % (start + 1, end, total, os.getpid()))
 
     # FIXME: Get the right backend.
     backend.update(index, current_qs)
@@ -96,7 +96,7 @@ def do_remove(backend, index, model, pks_seen, start, upper_bound, verbosity=1):
         if not smart_bytes(result.pk) in pks_seen:
             # The id is NOT in the small_cache_qs, issue a delete.
             if verbosity >= 2:
-                print "  removing %s." % result.pk
+                print("  removing %s." % result.pk)
 
             backend.remove(".".join([result.app_label, result.model_name, str(result.pk)]))
 
@@ -244,7 +244,7 @@ class Command(LabelCommand):
             total = qs.count()
 
             if self.verbosity >= 1:
-                print "Indexing %d %s." % (total, force_text(model._meta.verbose_name_plural))
+                print("Indexing %d %s." % (total, force_text(model._meta.verbose_name_plural)))
 
             pks_seen = set([smart_bytes(pk) for pk in qs.values_list('pk', flat=True)])
             batch_size = self.batchsize or backend.batch_size
