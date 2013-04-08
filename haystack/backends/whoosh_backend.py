@@ -671,7 +671,7 @@ class WhooshSearchBackend(BaseSearchBackend):
                 value = 'false'
         elif isinstance(value, (list, tuple)):
             value = u','.join([force_text(v) for v in value])
-        elif isinstance(value, (int, long, float)):
+        elif isinstance(value, (int, six.integer_types, float)):
             # Leave it alone.
             pass
         else:
@@ -705,7 +705,7 @@ class WhooshSearchBackend(BaseSearchBackend):
             converted_value = json.loads(value)
 
             # Try to handle most built-in types.
-            if isinstance(converted_value, (list, tuple, set, dict, int, float, long, complex)):
+            if isinstance(converted_value, (list, tuple, set, dict, float, six.integer_types, complex)):
                 return converted_value
         except:
             # If it fails (SyntaxError or its ilk) or we don't trust it,
