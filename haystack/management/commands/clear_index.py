@@ -14,7 +14,7 @@ class Command(BaseCommand):
         make_option('--noinput', action='store_false', dest='interactive', default=True,
             help='If provided, no prompts will be issued to the user and the data will be wiped out.'
         ),
-        make_option("-", "--using", action="append", dest="using",
+        make_option("-u", "--using", action="append", dest="using",
             default=[],
             help='Update only the named backend (can be used multiple times). '
                  'By default all backends will be updated.'

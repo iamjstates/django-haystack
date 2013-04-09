@@ -123,7 +123,7 @@ class Command(LabelCommand):
         make_option('-r', '--remove', action='store_true', dest='remove',
             default=False, help='Remove objects from the index that are no longer present in the database.'
         ),
-        make_option("-", "--using", action="append", dest="using",
+        make_option("-u", "--using", action="append", dest="using",
             default=[],
             help='Update only the named backend (can be used multiple times). '
                  'By default all backends will be updated.'
