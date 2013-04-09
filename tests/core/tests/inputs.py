@@ -39,11 +39,11 @@ class InputTestCase(TestCase):
 
     def test_exact_prepare(self):
         exact = inputs.Exact('hello OR there, :you')
-        self.assertEqual(exact.prepare(self.query_obj), u'"hello OR there, :yo"')
+        self.assertEqual(exact.prepare(self.query_obj), u'"hello OR there, :you"')
 
         # Incorrect, but the backend doesn't implement much of anything useful.
         exact = inputs.Exact('hello OR there, :you', clean=True)
-        self.assertEqual(exact.prepare(self.query_obj), u'"hello OR there, :yo"')
+        self.assertEqual(exact.prepare(self.query_obj), u'"hello OR there, :you"')
 
     def test_not_init(self):
         not_it = inputs.Not('hello OR there, :you')
