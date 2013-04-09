@@ -43,7 +43,7 @@ class SearchResult(object):
         self.stored_fields = None
         self.log = self._get_log()
 
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if not key in self.__dict__:
                 self.__dict__[key] = value
                 self._additional_fields.append(key)
@@ -201,7 +201,7 @@ class SearchResult(object):
 
             # Iterate through the index's fields, pulling out the fields that
             # are stored.
-            for fieldname, field in index.fields.items():
+            for fieldname, field in list(index.fields.items()):
                 if field.stored is True:
                     self._stored_fields[fieldname] = getattr(self, fieldname, u'')
 
