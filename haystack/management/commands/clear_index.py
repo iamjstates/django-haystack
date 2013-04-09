@@ -14,7 +14,7 @@ class Command(BaseCommand):
         make_option('--noinput', action='store_false', dest='interactive', default=True,
             help='If provided, no prompts will be issued to the user and the data will be wiped out.'
         ),
-        make_option("-u", "--using", action="append", dest="using",
+        make_option("-", "--using", action="append", dest="using",
             default=[],
             help='Update only the named backend (can be used multiple times). '
                  'By default all backends will be updated.'
@@ -29,14 +29,14 @@ class Command(BaseCommand):
 
         using = options.get('using')
         if not using:
-            using = connections.connections_info.keys()
+            using = list(connections.connections_info.keys())
 
         if options.get('interactive', True):
             print()
             print("WARNING: This will irreparably remove EVERYTHING from your search index in connection '%s'." % "', '".join(using))
             print("Your choices after this are to restore from backups or rebuild via the `rebuild_index` command.")
 
-            yes_or_no = input("Are you sure you wish to continue? [y/N] ")
+            yes_or_no = eval(input("Are you sure you wish to continue? [y/N] "))
             print()
 
             if not yes_or_no.lower().startswith('y'):

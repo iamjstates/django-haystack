@@ -477,7 +477,7 @@ class SearchIndexTestCase(TestCase):
         prepared_data = self.gfmsi.full_prepare(mock)
         self.assertEqual(len(prepared_data), 8)
         self.assertEqual(sorted(prepared_data.keys()), ['author', 'author_foo', 'django_ct', 'django_id', 'id', 'pub_date', 'pub_date_exact', 'text'])
-        self.assertEqual(prepared_data['author_foo'], u"Hi, I'm daniel")
+        self.assertEqual(prepared_data['author_foo'], "Hi, I'm daniel")
         self.assertEqual(prepared_data['pub_date_exact'], '2010-10-26T01:54:32')
 
 

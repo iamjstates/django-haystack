@@ -142,7 +142,7 @@ class SearchResult(object):
     def _get_verbose_name(self):
         if self.model is None:
             self.log.error("Model could not be found for SearchResult '%s'.", self)
-            return u''
+            return ''
 
         return force_text(capfirst(self.model._meta.verbose_name))
 
@@ -151,7 +151,7 @@ class SearchResult(object):
     def _get_verbose_name_plural(self):
         if self.model is None:
             self.log.error("Model could not be found for SearchResult '%s'.", self)
-            return u''
+            return ''
 
         return force_text(capfirst(self.model._meta.verbose_name_plural))
 
@@ -161,7 +161,7 @@ class SearchResult(object):
         """Returns the content type for the result's model instance."""
         if self.model is None:
             self.log.error("Model could not be found for SearchResult '%s'.", self)
-            return u''
+            return ''
 
         return six.text_type(self.model._meta)
 
@@ -203,7 +203,7 @@ class SearchResult(object):
             # are stored.
             for fieldname, field in list(index.fields.items()):
                 if field.stored is True:
-                    self._stored_fields[fieldname] = getattr(self, fieldname, u'')
+                    self._stored_fields[fieldname] = getattr(self, fieldname, '')
 
         return self._stored_fields
 

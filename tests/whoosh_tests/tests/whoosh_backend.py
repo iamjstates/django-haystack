@@ -321,7 +321,7 @@ class WhooshSearchBackendTestCase(TestCase):
         self.assertEqual(self.sb._from_python(2653), 2653)
         self.assertEqual(self.sb._from_python(25.5), 25.5)
         self.assertEqual(self.sb._from_python([1, 2, 3]), u'1,2,3')
-        self.assertEqual(self.sb._from_python({'a': 1, 'c': 3, 'b': 2}), u"{'a': 1, 'c': 3, 'b': 2}")
+        self.assertEqual(self.sb._from_python({'a': 1, 'c': 3, 'b': 2}), "{'a': 1, 'c': 3, 'b': 2}")
         self.assertEqual(self.sb._from_python(datetime(2009, 5, 9, 16, 14)), datetime(2009, 5, 9, 16, 14))
         self.assertEqual(self.sb._from_python(datetime(2009, 5, 9, 0, 0)), datetime(2009, 5, 9, 0, 0))
         self.assertEqual(self.sb._from_python(datetime(1899, 5, 18, 0, 0)), datetime(1899, 5, 18, 0, 0))
@@ -349,15 +349,15 @@ class WhooshSearchBackendTestCase(TestCase):
     def test_date_queries(self):
         self.sb.update(self.wmmi, self.sample_objs)
 
-        self.assertEqual(len(self.whoosh_search(u"pub_date:20090717003000")), 1)
-        self.assertEqual(len(self.whoosh_search(u"pub_date:20090717000000")), 0)
+        self.assertEqual(len(self.whoosh_search("pub_date:20090717003000")), 1)
+        self.assertEqual(len(self.whoosh_search("pub_date:20090717000000")), 0)
         self.assertEqual(len(self.whoosh_search(u'Ind* AND pub_date:[to 20090717003000]')), 3)
 
     def test_escaped_characters_queries(self):
         self.sb.update(self.wmmi, self.sample_objs)
 
-        self.assertEqual(len(self.whoosh_search(u"Indexed\!")), 23)
-        self.assertEqual(len(self.whoosh_search(u"http\:\/\/www\.example\.com")), 0)
+        self.assertEqual(len(self.whoosh_search("Indexed\!")), 23)
+        self.assertEqual(len(self.whoosh_search("http\:\/\/www\.example\.com")), 0)
 
     def test_build_schema(self):
         ui = UnifiedIndex()
@@ -623,15 +623,15 @@ class LiveWhooshSearchQuerySetTestCase(TestCase):
         self.assertEqual(len(sqs), 3)
 
         sqs = self.sqs.auto_query('Indexed!')
-        self.assertEqual(sqs.query.build_query(), u"('Indexed!')")
+        self.assertEqual(sqs.query.build_query(), "('Indexed!')")
         self.assertEqual(len(sqs), 3)
 
         sqs = self.sqs.auto_query('Indexed!').filter(pub_date__lte=date(2009, 8, 31))
-        self.assertEqual(sqs.query.build_query(), u"(('Indexed!') AND pub_date:([to 20090831000000]))")
+        self.assertEqual(sqs.query.build_query(), "(('Indexed!') AND pub_date:([to 20090831000000]))")
         self.assertEqual(len(sqs), 3)
 
         sqs = self.sqs.auto_query('Indexed!').filter(pub_date__lte=date(2009, 2, 23))
-        self.assertEqual(sqs.query.build_query(), u"(('Indexed!') AND pub_date:([to 20090223000000]))")
+        self.assertEqual(sqs.query.build_query(), "(('Indexed!') AND pub_date:([to 20090223000000]))")
         self.assertEqual(len(sqs), 2)
 
         sqs = self.sqs.auto_query('Indexed!').filter(pub_date__lte=date(2009, 2, 25)).filter(django_id__in=[1, 2]).exclude(name='daniel1')
@@ -639,15 +639,15 @@ class LiveWhooshSearchQuerySetTestCase(TestCase):
         self.assertEqual(len(sqs), 1)
 
         sqs = self.sqs.auto_query('re-inker')
-        self.assertEqual(sqs.query.build_query(), u"('re-inker')")
+        self.assertEqual(sqs.query.build_query(), "('re-inker')")
         self.assertEqual(len(sqs), 0)
 
         sqs = self.sqs.auto_query('0.7 wire')
-        self.assertEqual(sqs.query.build_query(), u"('0.7' wire)")
+        self.assertEqual(sqs.query.build_query(), "('0.7' wire)")
         self.assertEqual(len(sqs), 0)
 
         sqs = self.sqs.auto_query("daler-rowney pearlescent 'bell bronze'")
-        self.assertEqual(sqs.query.build_query(), u"('daler-rowney' pearlescent 'bell bronze')")
+        self.assertEqual(sqs.query.build_query(), "('daler-rowney' pearlescent 'bell bronze')")
         self.assertEqual(len(sqs), 0)
 
         sqs = self.sqs.models(MockModel)
@@ -761,7 +761,7 @@ class LiveWhooshSearchQuerySetTestCase(TestCase):
 
     def test_query_generation(self):
         sqs = self.sqs.filter(SQ(content=AutoQuery("hello world")) | SQ(title=AutoQuery("hello world")))
-        self.assertEqual(sqs.query.build_query(), u"((hello world) OR title:(hello world))")
+        self.assertEqual(sqs.query.build_query(), "((hello world) OR title:(hello world))")
 
     def test_result_class(self):
         self.sb.update(self.wmmi, self.sample_objs)

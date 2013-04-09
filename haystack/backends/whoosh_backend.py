@@ -191,7 +191,7 @@ class WhooshSearchBackend(BaseSearchBackend):
                 # We'll log the object identifier but won't include the actual object
                 # to avoid the possibility of that generating encoding errors while
                 # processing the log message:
-                self.log.error(u"%s while preparing object for update" % e.__name__, exc_info=True, extra={
+                self.log.error("%s while preparing object for update" % e.__name__, exc_info=True, extra={
                     "data": {
                         "index": index,
                         "object": get_identifier(obj)
@@ -215,7 +215,7 @@ class WhooshSearchBackend(BaseSearchBackend):
         whoosh_id = get_identifier(obj_or_string)
 
         try:
-            self.index.delete_by_query(q=self.parser.parse(u'%s:"%s"' % (ID, whoosh_id)))
+            self.index.delete_by_query(q=self.parser.parse('%s:"%s"' % (ID, whoosh_id)))
         except Exception as e:
             if not self.silently_fail:
                 raise
@@ -235,9 +235,9 @@ class WhooshSearchBackend(BaseSearchBackend):
                 models_to_delete = []
 
                 for model in models:
-                    models_to_delete.append(u"%s:%s.%s" % (DJANGO_CT, model._meta.app_label, model._meta.module_name))
+                    models_to_delete.append("%s:%s.%s" % (DJANGO_CT, model._meta.app_label, model._meta.module_name))
 
-                self.index.delete_by_query(q=self.parser.parse(u" OR ".join(models_to_delete)))
+                self.index.delete_by_query(q=self.parser.parse(" OR ".join(models_to_delete)))
         except Exception as e:
             if not self.silently_fail:
                 raise
@@ -282,7 +282,7 @@ class WhooshSearchBackend(BaseSearchBackend):
 
         # A one-character query (non-wildcard) gets nabbed by a stopwords
         # filter and should yield zero results.
-        if len(query_string) <= 1 and query_string != u'*':
+        if len(query_string) <= 1 and query_string != '*':
             return {
                 'results': [],
                 'hits': 0,
@@ -670,7 +670,7 @@ class WhooshSearchBackend(BaseSearchBackend):
             else:
                 value = 'false'
         elif isinstance(value, (list, tuple)):
-            value = u','.join([force_text(v) for v in value])
+            value = ','.join([force_text(v) for v in value])
         elif isinstance(value, (int, six.integer_types, float)):
             # Leave it alone.
             pass
@@ -778,7 +778,7 @@ class WhooshSearchQuery(BaseSearchQuery):
         if field == 'content':
             index_fieldname = ''
         else:
-            index_fieldname = u'%s:' % connections[self._using].get_unified_index().get_index_fieldname(field)
+            index_fieldname = '%s:' % connections[self._using].get_unified_index().get_index_fieldname(field)
 
         filter_types = {
             'contains': '%s',
@@ -814,7 +814,7 @@ class WhooshSearchQuery(BaseSearchQuery):
                     if len(terms) == 1:
                         query_frag = terms[0]
                     else:
-                        query_frag = u"(%s)" % " AND ".join(terms)
+                        query_frag = "(%s)" % " AND ".join(terms)
             elif filter_type == 'in':
                 in_options = []
 
@@ -845,7 +845,7 @@ class WhooshSearchQuery(BaseSearchQuery):
                 if hasattr(prepared_value[1], 'strftime'):
                     end = self._convert_datetime(end)
 
-                query_frag = u"[%s to %s]" % (start, end)
+                query_frag = "[%s to %s]" % (start, end)
             elif filter_type == 'exact':
                 if value.input_type_name == 'exact':
                     query_frag = prepared_value
@@ -861,7 +861,7 @@ class WhooshSearchQuery(BaseSearchQuery):
         if len(query_frag) and not query_frag.startswith('(') and not query_frag.endswith(')'):
             query_frag = "(%s)" % query_frag
 
-        return u"%s%s" % (index_fieldname, query_frag)
+        return "%s%s" % (index_fieldname, query_frag)
 
 
         # if not filter_type in ('in', 'range'):

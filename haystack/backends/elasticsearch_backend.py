@@ -142,7 +142,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
         if not self.setup_complete:
             try:
                 self.setup()
-            except (requests.RequestException, pyelasticsearch.ElasticHttpError), e:
+            except (requests.RequestException, pyelasticsearch.ElasticHttpError) as e:
                 if not self.silently_fail:
                     raise
 
@@ -157,18 +157,18 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
                 final_data = {}
 
                 # Convert the data to make sure it's happy.
-                for key, value in prepped_data.items():
+                for key, value in list(prepped_data.items()):
                     final_data[key] = self._from_python(value)
 
                 prepped_docs.append(final_data)
-            except (requests.RequestException, pyelasticsearch.ElasticHttpError), e:
+            except (requests.RequestException, pyelasticsearch.ElasticHttpError) as e:
                 if not self.silently_fail:
                     raise
 
                 # We'll log the object identifier but won't include the actual object
                 # to avoid the possibility of that generating encoding errors while
                 # processing the log message:
-                self.log.error(u"%s while preparing object for update" % e.__name__, exc_info=True, extra={
+                self.log.error("%s while preparing object for update" % e.__name__, exc_info=True, extra={
                     "data": {
                         "index": index,
                         "object": get_identifier(obj)
@@ -186,7 +186,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
         if not self.setup_complete:
             try:
                 self.setup()
-            except (requests.RequestException, pyelasticsearch.ElasticHttpError), e:
+            except (requests.RequestException, pyelasticsearch.ElasticHttpError) as e:
                 if not self.silently_fail:
                     raise
 
@@ -198,7 +198,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
 
             if commit:
                 self.conn.refresh(index=self.index_name)
-        except (requests.RequestException, pyelasticsearch.ElasticHttpError), e:
+        except (requests.RequestException, pyelasticsearch.ElasticHttpError) as e:
             if not self.silently_fail:
                 raise
 
@@ -226,7 +226,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
 
             if commit:
                 self.conn.refresh(index=self.index_name)
-        except (requests.RequestException, pyelasticsearch.ElasticHttpError), e:
+        except (requests.RequestException, pyelasticsearch.ElasticHttpError) as e:
             if not self.silently_fail:
                 raise
 
@@ -336,7 +336,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
         if date_facets is not None:
             kwargs.setdefault('facets', {})
 
-            for facet_fieldname, value in date_facets.items():
+            for facet_fieldname, value in list(date_facets.items()):
                 # Need to detect on gap_by & only add amount if it's more than one.
                 interval = value.get('gap_by').lower()
 
@@ -397,7 +397,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
                 'fquery': {
                     'query': {
                         'query_string': {
-                            'query': u' AND '.join(list(narrow_queries)),
+                            'query': ' AND '.join(list(narrow_queries)),
                         },
                     },
                     '_cache': True,
@@ -482,7 +482,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
 
         order_fields = set()
         for order in search_kwargs.get('sort', []):
-            for key in order.keys():
+            for key in list(order.keys()):
                 order_fields.add(key)
 
         geo_sort = '_geo_distance' in order_fields
@@ -496,7 +496,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
             raw_results = self.conn.search(search_kwargs,
                                            index=self.index_name,
                                            doc_type='modelresult')
-        except (requests.RequestException, pyelasticsearch.ElasticHttpError), e:
+        except (requests.RequestException, pyelasticsearch.ElasticHttpError) as e:
             if not self.silently_fail:
                 raise
 
@@ -534,7 +534,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
 
         try:
             raw_results = self.conn.more_like_this(self.index_name, 'modelresult', doc_id, [field_name], **params)
-        except (requests.RequestException, pyelasticsearch.ElasticHttpError), e:
+        except (requests.RequestException, pyelasticsearch.ElasticHttpError) as e:
             if not self.silently_fail:
                 raise
 
@@ -562,7 +562,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
                 'queries': {},
             }
 
-            for facet_fieldname, facet_info in raw_results['facets'].items():
+            for facet_fieldname, facet_info in list(raw_results['facets'].items()):
                 if facet_info.get('_type', 'terms') == 'terms':
                     facets['fields'][facet_fieldname] = [(individual['term'], individual['count']) for individual in facet_info['terms']]
                 elif facet_info.get('_type', 'terms') == 'date_histogram':
@@ -583,7 +583,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
             model = get_model(app_label, model_name)
 
             if model and model in indexed_models:
-                for key, value in source.items():
+                for key, value in list(source.items()):
                     index = unified_index.get_index(model)
                     string_key = str(key)
 
@@ -623,7 +623,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
         content_field_name = ''
         mapping = {}
 
-        for field_name, field_class in fields.items():
+        for field_name, field_class in list(fields.items()):
             field_mapping = {
                 'boost': field_class.boost,
                 'index': 'analyzed',
@@ -691,7 +691,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
         if iso:
             return iso
         elif isinstance(value, str):
-            return unicode(value, errors='replace')  # TODO: Be stricter.
+            return six.text_type(value, errors='replace')  # TODO: Be stricter.
         elif isinstance(value, set):
             return list(value)
         return value
@@ -707,7 +707,7 @@ class ElasticsearchSearchBackend(BaseSearchBackend):
             if possible_datetime:
                 date_values = possible_datetime.groupdict()
 
-                for dk, dv in date_values.items():
+                for dk, dv in list(date_values.items()):
                     date_values[dk] = int(dv)
 
                 return datetime(
@@ -786,16 +786,16 @@ class ElasticsearchSearchQuery(BaseSearchQuery):
         if field == 'content':
             index_fieldname = ''
         else:
-            index_fieldname = u'%s:' % connections[self._using].get_unified_index().get_index_fieldname(field)
+            index_fieldname = '%s:' % connections[self._using].get_unified_index().get_index_fieldname(field)
 
         filter_types = {
-            'contains': u'%s',
-            'startswith': u'%s*',
-            'exact': u'%s',
-            'gt': u'{%s TO *}',
-            'gte': u'[%s TO *]',
-            'lt': u'{* TO %s}',
-            'lte': u'[* TO %s]',
+            'contains': '%s',
+            'startswith': '%s*',
+            'exact': '%s',
+            'gt': '{%s TO *}',
+            'gte': '[%s TO *]',
+            'lt': '{* TO %s}',
+            'lte': '[* TO %s]',
         }
 
         if value.post_process is False:
@@ -817,18 +817,18 @@ class ElasticsearchSearchQuery(BaseSearchQuery):
                     if len(terms) == 1:
                         query_frag = terms[0]
                     else:
-                        query_frag = u"(%s)" % " AND ".join(terms)
+                        query_frag = "(%s)" % " AND ".join(terms)
             elif filter_type == 'in':
                 in_options = []
 
                 for possible_value in prepared_value:
-                    in_options.append(u'"%s"' % self.backend._from_python(possible_value))
+                    in_options.append('"%s"' % self.backend._from_python(possible_value))
 
-                query_frag = u"(%s)" % " OR ".join(in_options)
+                query_frag = "(%s)" % " OR ".join(in_options)
             elif filter_type == 'range':
                 start = self.backend._from_python(prepared_value[0])
                 end = self.backend._from_python(prepared_value[1])
-                query_frag = u'["%s" TO "%s"]' % (start, end)
+                query_frag = '["%s" TO "%s"]' % (start, end)
             elif filter_type == 'exact':
                 if value.input_type_name == 'exact':
                     query_frag = prepared_value
@@ -844,7 +844,7 @@ class ElasticsearchSearchQuery(BaseSearchQuery):
         if len(query_frag) and not query_frag.startswith('(') and not query_frag.endswith(')'):
             query_frag = "(%s)" % query_frag
 
-        return u"%s%s" % (index_fieldname, query_frag)
+        return "%s%s" % (index_fieldname, query_frag)
 
     def build_alt_parser_query(self, parser_name, query_string='', **kwargs):
         if query_string:
@@ -854,11 +854,11 @@ class ElasticsearchSearchQuery(BaseSearchQuery):
 
         for key in sorted(kwargs.keys()):
             if isinstance(kwargs[key], six.string_types) and ' ' in kwargs[key]:
-                kwarg_bits.append(u"%s='%s'" % (key, kwargs[key]))
+                kwarg_bits.append("%s='%s'" % (key, kwargs[key]))
             else:
-                kwarg_bits.append(u"%s=%s" % (key, kwargs[key]))
+                kwarg_bits.append("%s=%s" % (key, kwargs[key]))
 
-        return u"{!%s %s}" % (parser_name, ' '.join(kwarg_bits))
+        return "{!%s %s}" % (parser_name, ' '.join(kwarg_bits))
 
     def build_params(self, spelling_query=None, **kwargs):
         search_kwargs = {

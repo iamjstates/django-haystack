@@ -7,6 +7,7 @@ from haystack.constants import REPR_OUTPUT_SIZE, ITERATOR_LOAD_PER_QUERY, DEFAUL
 from haystack.exceptions import NotHandled
 from haystack.inputs import Raw, Clean, AutoQuery
 from haystack.utils import log as logging
+from functools import reduce
 
 
 class SearchQuerySet(object):
@@ -173,7 +174,7 @@ class SearchQuerySet(object):
         # an array of 100,000 ``None``s consumed less than .5 Mb, which ought
         # to be an acceptable loss for consistent and more efficient caching.
         if len(self._result_cache) == 0:
-            self._result_cache = [None for i in xrange(self.query.get_count())]
+            self._result_cache = [None for i in range(self.query.get_count())]
 
         if start is None:
             start = 0
@@ -435,7 +436,7 @@ class SearchQuerySet(object):
         clone = self._clone()
         query_bits = []
 
-        for field_name, query in kwargs.items():
+        for field_name, query in list(kwargs.items()):
             for word in query.split(' '):
                 bit = clone.query.clean(word.strip())
                 kwargs = {

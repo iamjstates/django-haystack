@@ -80,7 +80,7 @@ class ElasticsearchAnotherMockModelSearchIndex(indexes.SearchIndex, indexes.Inde
         return AnotherMockModel
 
     def prepare_text(self, obj):
-        return u"You might be searching for the user %s" % obj.author
+        return "You might be searching for the user %s" % obj.author
 
 
 class ElasticsearchBoostMockSearchIndex(indexes.SearchIndex, indexes.Indexable):
@@ -823,9 +823,9 @@ class LiveElasticsearchSearchQuerySetTestCase(TestCase):
         self.assertEqual(len(connections['default'].queries), 5)
 
     def test_quotes_regression(self):
-        sqs = self.sqs.auto_query(u"44°48'40''N 20°28'32''E")
+        sqs = self.sqs.auto_query("44°48'40''N 20°28'32''E")
         # Should not have empty terms.
-        self.assertEqual(sqs.query.build_query(), u"(44\xb048'40''N 20\xb028'32''E)")
+        self.assertEqual(sqs.query.build_query(), "(44\xb048'40''N 20\xb028'32''E)")
         # Should not cause Elasticsearch to 500.
         self.assertEqual(sqs.count(), 0)
 
@@ -871,7 +871,7 @@ class LiveElasticsearchSearchQuerySetTestCase(TestCase):
 
     def test_query_generation(self):
         sqs = self.sqs.filter(SQ(content=AutoQuery("hello world")) | SQ(title=AutoQuery("hello world")))
-        self.assertEqual(sqs.query.build_query(), u"((hello world) OR title:(hello world))")
+        self.assertEqual(sqs.query.build_query(), "((hello world) OR title:(hello world))")
 
     def test_result_class(self):
         # Assert that we're defaulting to ``SearchResult``.

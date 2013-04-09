@@ -55,7 +55,7 @@ class SolrSearchBackend(BaseSearchBackend):
                 # We'll log the object identifier but won't include the actual object
                 # to avoid the possibility of that generating encoding errors while
                 # processing the log message:
-                self.log.error(u"UnicodeDecodeError while preparing object for update", exc_info=True, extra={
+                self.log.error("UnicodeDecodeError while preparing object for update", exc_info=True, extra={
                     "data": {
                         "index": index,
                         "object": get_identifier(obj)
@@ -65,7 +65,7 @@ class SolrSearchBackend(BaseSearchBackend):
         if len(docs) > 0:
             try:
                 self.conn.add(docs, commit=commit, boost=index.get_field_weights())
-            except (IOError, SolrError), e:
+            except (IOError, SolrError) as e:
                 if not self.silently_fail:
                     raise
 
@@ -80,7 +80,7 @@ class SolrSearchBackend(BaseSearchBackend):
                 ID: solr_id
             }
             self.conn.delete(**kwargs)
-        except (IOError, SolrError), e:
+        except (IOError, SolrError) as e:
             if not self.silently_fail:
                 raise
 
@@ -101,7 +101,7 @@ class SolrSearchBackend(BaseSearchBackend):
 
             # Run an optimize post-clear. http://wiki.apache.org/solr/FAQ#head-9aafb5d8dff5308e8ea4fcf4b71f19f029c4bb99
             self.conn.optimize()
-        except (IOError, SolrError), e:
+        except (IOError, SolrError) as e:
             if not self.silently_fail:
                 raise
 
@@ -122,7 +122,7 @@ class SolrSearchBackend(BaseSearchBackend):
 
         try:
             raw_results = self.conn.search(query_string, **search_kwargs)
-        except (IOError, SolrError), e:
+        except (IOError, SolrError) as e:
             if not self.silently_fail:
                 raise
 
@@ -188,10 +188,10 @@ class SolrSearchBackend(BaseSearchBackend):
 
         if date_facets is not None:
             kwargs['facet'] = 'on'
-            kwargs['facet.date'] = date_facets.keys()
+            kwargs['facet.date'] = list(date_facets.keys())
             kwargs['facet.date.other'] = 'none'
 
-            for key, value in date_facets.items():
+            for key, value in list(date_facets.items()):
                 kwargs["f.%s.facet.date.start" % key] = self.conn._from_python(value.get('start_date'))
                 kwargs["f.%s.facet.date.end" % key] = self.conn._from_python(value.get('end_date'))
                 gap_by_string = value.get('gap_by').upper()
@@ -307,7 +307,7 @@ class SolrSearchBackend(BaseSearchBackend):
 
         try:
             raw_results = self.conn.more_like_this(query, field_name, **params)
-        except (IOError, SolrError), e:
+        except (IOError, SolrError) as e:
             if not self.silently_fail:
                 raise
 
@@ -337,7 +337,7 @@ class SolrSearchBackend(BaseSearchBackend):
                 for facet_field in facets[key]:
                     # Convert to a two-tuple, as Solr's json format returns a list of
                     # pairs.
-                    facets[key][facet_field] = zip(facets[key][facet_field][::2], facets[key][facet_field][1::2])
+                    facets[key][facet_field] = list(zip(facets[key][facet_field][::2], facets[key][facet_field][1::2]))
 
         if self.include_spelling is True:
             if hasattr(raw_results, 'spellcheck'):
@@ -349,13 +349,13 @@ class SolrSearchBackend(BaseSearchBackend):
         unified_index = connections[self.connection_alias].get_unified_index()
         indexed_models = unified_index.get_indexed_models()
 
-        for raw_result in raw_results.docs:
+        for raw_result in list(raw_results.docs):
             app_label, model_name = raw_result[DJANGO_CT].split('.')
             additional_fields = {}
             model = get_model(app_label, model_name)
 
             if model and model in indexed_models:
-                for key, value in raw_result.items():
+                for key, value in list(raw_result.items()):
                     index = unified_index.get_index(model)
                     string_key = str(key)
 
@@ -396,7 +396,7 @@ class SolrSearchBackend(BaseSearchBackend):
         content_field_name = ''
         schema_fields = []
 
-        for field_name, field_class in fields.items():
+        for field_name, field_class in list(fields.items()):
             field_data = {
                 'field_name': field_class.index_fieldname,
                 'type': 'text_en',
@@ -478,8 +478,8 @@ class SolrSearchBackend(BaseSearchBackend):
 
         try:
             return self.conn.extract(file_obj)
-        except StandardError, e:
-            self.log.warning(u"Unable to extract file contents: %s", e,
+        except Exception as e:
+            self.log.warning("Unable to extract file contents: %s", e,
                              exc_info=True, extra={"data": {"file": file_obj}})
             return None
 
@@ -534,16 +534,16 @@ class SolrSearchQuery(BaseSearchQuery):
         if field == 'content':
             index_fieldname = ''
         else:
-            index_fieldname = u'%s:' % connections[self._using].get_unified_index().get_index_fieldname(field)
+            index_fieldname = '%s:' % connections[self._using].get_unified_index().get_index_fieldname(field)
 
         filter_types = {
-            'contains': u'%s',
-            'startswith': u'%s*',
-            'exact': u'%s',
-            'gt': u'{%s TO *}',
-            'gte': u'[%s TO *]',
-            'lt': u'{* TO %s}',
-            'lte': u'[* TO %s]',
+            'contains': '%s',
+            'startswith': '%s*',
+            'exact': '%s',
+            'gt': '{%s TO *}',
+            'gte': '[%s TO *]',
+            'lt': '{* TO %s}',
+            'lte': '[* TO %s]',
         }
 
         if value.post_process is False:
@@ -562,18 +562,18 @@ class SolrSearchQuery(BaseSearchQuery):
                     if len(terms) == 1:
                         query_frag = terms[0]
                     else:
-                        query_frag = u"(%s)" % " AND ".join(terms)
+                        query_frag = "(%s)" % " AND ".join(terms)
             elif filter_type == 'in':
                 in_options = []
 
                 for possible_value in prepared_value:
-                    in_options.append(u'"%s"' % self.backend.conn._from_python(possible_value))
+                    in_options.append('"%s"' % self.backend.conn._from_python(possible_value))
 
-                query_frag = u"(%s)" % " OR ".join(in_options)
+                query_frag = "(%s)" % " OR ".join(in_options)
             elif filter_type == 'range':
                 start = self.backend.conn._from_python(prepared_value[0])
                 end = self.backend.conn._from_python(prepared_value[1])
-                query_frag = u'["%s" TO "%s"]' % (start, end)
+                query_frag = '["%s" TO "%s"]' % (start, end)
             elif filter_type == 'exact':
                 if value.input_type_name == 'exact':
                     query_frag = prepared_value
@@ -589,7 +589,7 @@ class SolrSearchQuery(BaseSearchQuery):
         if len(query_frag) and not query_frag.startswith('(') and not query_frag.endswith(')'):
             query_frag = "(%s)" % query_frag
 
-        return u"%s%s" % (index_fieldname, query_frag)
+        return "%s%s" % (index_fieldname, query_frag)
 
     def build_alt_parser_query(self, parser_name, query_string='', **kwargs):
         if query_string:
@@ -599,11 +599,11 @@ class SolrSearchQuery(BaseSearchQuery):
 
         for key in sorted(kwargs.keys()):
             if isinstance(kwargs[key], six.string_types) and ' ' in kwargs[key]:
-                kwarg_bits.append(u"%s='%s'" % (key, kwargs[key]))
+                kwarg_bits.append("%s='%s'" % (key, kwargs[key]))
             else:
-                kwarg_bits.append(u"%s=%s" % (key, kwargs[key]))
+                kwarg_bits.append("%s=%s" % (key, kwargs[key]))
 
-        return u'_query_:"{!%s %s}%s"' % (parser_name, Clean(' '.join(kwarg_bits)), query_string)
+        return '_query_:"{!%s %s}%s"' % (parser_name, Clean(' '.join(kwarg_bits)), query_string)
 
     def build_params(self, spelling_query=None, **kwargs):
         search_kwargs = {

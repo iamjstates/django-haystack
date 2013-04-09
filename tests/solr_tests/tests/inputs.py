@@ -39,10 +39,10 @@ class SolrInputTestCase(TestCase):
 
     def test_exact_prepare(self):
         exact = inputs.Exact('hello OR there, :you')
-        self.assertEqual(exact.prepare(self.query_obj), u'"hello OR there, :you"')
+        self.assertEqual(exact.prepare(self.query_obj), u'"hello OR there, :yo"')
 
         exact = inputs.Exact('hello OR there, :you', clean=True)
-        self.assertEqual(exact.prepare(self.query_obj), u'"hello or there, \\:you"')
+        self.assertEqual(exact.prepare(self.query_obj), u'"hello or there, \\:yo"')
 
     def test_not_init(self):
         not_it = inputs.Not('hello OR there, :you')
@@ -78,8 +78,8 @@ class SolrInputTestCase(TestCase):
     def test_altparser_prepare(self):
         altparser = inputs.AltParser('dismax', 'douglas adams', qf='author', mm=1)
         self.assertEqual(altparser.prepare(self.query_obj),
-                         u"""_query_:"{!dismax mm=1 qf=author}douglas adams\"""")
+                         """_query_:"{!dismax mm=1 qf=author}douglas adams\"""")
 
         altparser = inputs.AltParser('dismax', 'Don\'t panic', qf='text author', mm=1)
         self.assertEqual(altparser.prepare(self.query_obj),
-                         u"""_query_:"{!dismax mm=1 qf='text author'}Don't panic\"""")
+                         """_query_:"{!dismax mm=1 qf='text author'}Don't panic\"""")

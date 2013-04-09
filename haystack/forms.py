@@ -83,7 +83,7 @@ class FacetedSearchForm(SearchForm):
             field, value = facet.split(":", 1)
 
             if value:
-                sqs = sqs.narrow(u'%s:"%s"' % (field, sqs.query.clean(value)))
+                sqs = sqs.narrow('%s:"%s"' % (field, sqs.query.clean(value)))
 
         return sqs
 

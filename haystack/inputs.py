@@ -20,7 +20,7 @@ class BaseInput(object):
         self.kwargs = kwargs
 
     def __repr__(self):
-        return u"<%s '%s'>" % (self.__class__.__name__, self.__str__().encode('utf8'))
+        return "<%s '%s'>" % (self.__class__.__name__, self.__str__().encode('utf8'))
 
     def __str__(self):
         return force_text(self.query_string)
@@ -71,7 +71,7 @@ class Exact(BaseInput):
         if self.kwargs.get('clean', False):
             # We need to clean each part of the exact match.
             exact_bits = [Clean(bit).prepare(query_obj) for bit in query_string.split(' ') if bit]
-            query_string = u' '.join(exact_bits)
+            query_string = ' '.join(exact_bits)
 
         return query_obj.build_exact_query(query_string)
 
@@ -125,7 +125,7 @@ class AutoQuery(BaseInput):
             else:
                 query_bits.append(Clean(token).prepare(query_obj))
 
-        return u' '.join(query_bits)
+        return ' '.join(query_bits)
 
 
 class AltParser(BaseInput):
@@ -143,7 +143,7 @@ class AltParser(BaseInput):
         self.kwargs = kwargs
 
     def __repr__(self):
-        return u"<%s '%s' '%s' '%s'>" % (self.__class__.__name__, self.parser_name, self.query_string, self.kwargs)
+        return "<%s '%s' '%s' '%s'>" % (self.__class__.__name__, self.parser_name, self.query_string, self.kwargs)
 
     def prepare(self, query_obj):
         if not hasattr(query_obj, 'build_alt_parser_query'):

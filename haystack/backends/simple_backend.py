@@ -7,6 +7,7 @@ from haystack import connections
 from haystack.backends import BaseEngine, BaseSearchBackend, BaseSearchQuery, SearchNode, log_query
 from haystack.inputs import PythonData
 from haystack.models import SearchResult
+from functools import reduce
 
 
 if settings.DEBUG:

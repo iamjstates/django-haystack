@@ -39,10 +39,10 @@ class ElasticsearchInputTestCase(TestCase):
 
     def test_exact_prepare(self):
         exact = inputs.Exact('hello OR there, :you')
-        self.assertEqual(exact.prepare(self.query_obj), u'"hello OR there, :you"')
+        self.assertEqual(exact.prepare(self.query_obj), u'"hello OR there, :yo"')
 
         exact = inputs.Exact('hello OR there, :you', clean=True)
-        self.assertEqual(exact.prepare(self.query_obj), u'"hello or there, \\:you"')
+        self.assertEqual(exact.prepare(self.query_obj), u'"hello or there, \\:yo"')
 
     def test_not_init(self):
         not_it = inputs.Not('hello OR there, :you')
@@ -78,4 +78,4 @@ class ElasticsearchInputTestCase(TestCase):
     def test_altparser_prepare(self):
         altparser = inputs.AltParser('dismax', 'douglas adams', qf='author', mm=1)
         self.assertEqual(altparser.prepare(self.query_obj),
-                         u"""{!dismax mm=1 qf=author v='douglas adams'}""")
+                         """{!dismax mm=1 qf=author v='douglas adams'}""")

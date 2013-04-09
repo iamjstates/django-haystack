@@ -29,4 +29,4 @@ class BarIndex(SearchIndex, Indexable):
         return Bar
 
     def prepare_text(self, obj):
-        return u"%s\n%s" % (obj.author, obj.content)
+        return "%s\n%s" % (obj.author, obj.content)

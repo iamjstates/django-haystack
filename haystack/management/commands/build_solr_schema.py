@@ -13,7 +13,7 @@ class Command(BaseCommand):
     base_options = (
         make_option("-f", "--filename", action="store", type="string", dest="filename",
                     help='If provided, directs output to a file instead of stdout.'),
-        make_option("-u", "--using", action="store", type="string", dest="using", default=DEFAULT_ALIAS,
+        make_option("-", "--using", action="store", type="string", dest="using", default=DEFAULT_ALIAS,
                     help='If provided, chooses a connection to work with.'),
     )
     option_list = BaseCommand.option_list + base_options

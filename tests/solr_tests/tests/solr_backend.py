@@ -77,7 +77,7 @@ class SolrAnotherMockModelSearchIndex(indexes.SearchIndex, indexes.Indexable):
         return AnotherMockModel
 
     def prepare_text(self, obj):
-        return u"You might be searching for the user %s" % obj.author
+        return "You might be searching for the user %s" % obj.author
 
 
 class SolrBoostMockSearchIndex(indexes.SearchIndex, indexes.Indexable):
@@ -169,7 +169,7 @@ class SolrQuotingMockSearchIndex(indexes.SearchIndex, indexes.Indexable):
         return MockModel
 
     def prepare_text(self, obj):
-        return u"""Don't panic but %s has been iñtërnâtiônàlizéð""" % obj.author
+        return """Don't panic but %s has been iñtërnâtiônàlizéð""" % obj.author
 
 
 class SolrSearchBackendTestCase(TestCase):
@@ -736,7 +736,7 @@ class LiveSolrSearchQuerySetTestCase(TestCase):
         sqs = self.sqs.load_all()
         self.assertTrue(isinstance(sqs, SearchQuerySet))
         self.assertTrue(len(sqs) > 0)
-        self.assertEqual(sqs[0].object.foo, u"Registering indexes in Haystack is very similar to registering models and ``ModelAdmin`` classes in the `Django admin site`_.  If you want to override the default indexing behavior for your model you can specify your own ``SearchIndex`` class.  This is useful for ensuring that future-dated or non-live content is not indexed and searchable. Our ``Note`` model has a ``pub_date`` field, so let's update our code to include our own ``SearchIndex`` to exclude indexing future-dated notes:")
+        self.assertEqual(sqs[0].object.foo, "Registering indexes in Haystack is very similar to registering models and ``ModelAdmin`` classes in the `Django admin site`_.  If you want to override the default indexing behavior for your model you can specify your own ``SearchIndex`` class.  This is useful for ensuring that future-dated or non-live content is not indexed and searchable. Our ``Note`` model has a ``pub_date`` field, so let's update our code to include our own ``SearchIndex`` to exclude indexing future-dated notes:")
 
     def test_iter(self):
         reset_search_queries()
@@ -879,7 +879,7 @@ class LiveSolrSearchQuerySetTestCase(TestCase):
         sqs = self.rsqs.load_all()
         self.assertTrue(isinstance(sqs, SearchQuerySet))
         self.assertTrue(len(sqs) > 0)
-        self.assertEqual(sqs[0].object.foo, u"Registering indexes in Haystack is very similar to registering models and ``ModelAdmin`` classes in the `Django admin site`_.  If you want to override the default indexing behavior for your model you can specify your own ``SearchIndex`` class.  This is useful for ensuring that future-dated or non-live content is not indexed and searchable. Our ``Note`` model has a ``pub_date`` field, so let's update our code to include our own ``SearchIndex`` to exclude indexing future-dated notes:")
+        self.assertEqual(sqs[0].object.foo, "Registering indexes in Haystack is very similar to registering models and ``ModelAdmin`` classes in the `Django admin site`_.  If you want to override the default indexing behavior for your model you can specify your own ``SearchIndex`` class.  This is useful for ensuring that future-dated or non-live content is not indexed and searchable. Our ``Note`` model has a ``pub_date`` field, so let's update our code to include our own ``SearchIndex`` to exclude indexing future-dated notes:")
 
     def test_related_load_all_queryset(self):
         sqs = self.rsqs.load_all()
@@ -955,9 +955,9 @@ class LiveSolrSearchQuerySetTestCase(TestCase):
         self.assertEqual(len(connections['default'].queries), 5)
 
     def test_quotes_regression(self):
-        sqs = self.sqs.auto_query(u"44°48'40''N 20°28'32''E")
+        sqs = self.sqs.auto_query("44°48'40''N 20°28'32''E")
         # Should not have empty terms.
-        self.assertEqual(sqs.query.build_query(), u"(44\xb048'40''N 20\xb028'32''E)")
+        self.assertEqual(sqs.query.build_query(), "(44\xb048'40''N 20\xb028'32''E)")
         # Should not cause Solr to 500.
         self.assertEqual(sqs.count(), 0)
 
@@ -1003,7 +1003,7 @@ class LiveSolrSearchQuerySetTestCase(TestCase):
 
     def test_query_generation(self):
         sqs = self.sqs.filter(SQ(content=AutoQuery("hello world")) | SQ(title=AutoQuery("hello world")))
-        self.assertEqual(sqs.query.build_query(), u"((hello world) OR title:(hello world))")
+        self.assertEqual(sqs.query.build_query(), "((hello world) OR title:(hello world))")
 
     def test_result_class(self):
         # Assert that we're defaulting to ``SearchResult``.
