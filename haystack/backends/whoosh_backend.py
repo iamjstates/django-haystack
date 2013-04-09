@@ -135,7 +135,7 @@ class WhooshSearchBackend(BaseSearchBackend):
         initial_key_count = len(schema_fields)
         content_field_name = ''
 
-        for field_name, field_class in fields.items():
+        for field_name, field_class in list(fields.items()):
             if field_class.is_multivalued:
                 if field_class.indexed is False:
                     schema_fields[field_class.index_fieldname] = IDLIST(stored=True, field_boost=field_class.boost)
@@ -184,7 +184,7 @@ class WhooshSearchBackend(BaseSearchBackend):
 
             try:
                 writer.update_document(**doc)
-            except Exception, e:
+            except Exception as e:
                 if not self.silently_fail:
                     raise
 
@@ -216,7 +216,7 @@ class WhooshSearchBackend(BaseSearchBackend):
 
         try:
             self.index.delete_by_query(q=self.parser.parse(u'%s:"%s"' % (ID, whoosh_id)))
-        except Exception, e:
+        except Exception as e:
             if not self.silently_fail:
                 raise
 
@@ -238,7 +238,7 @@ class WhooshSearchBackend(BaseSearchBackend):
                     models_to_delete.append(u"%s:%s.%s" % (DJANGO_CT, model._meta.app_label, model._meta.module_name))
 
                 self.index.delete_by_query(q=self.parser.parse(u" OR ".join(models_to_delete)))
-        except Exception, e:
+        except Exception as e:
             if not self.silently_fail:
                 raise
 
@@ -580,7 +580,7 @@ class WhooshSearchBackend(BaseSearchBackend):
             model = get_model(app_label, model_name)
 
             if model and model in indexed_models:
-                for key, value in raw_result.items():
+                for key, value in list(raw_result.items()):
                     index = unified_index.get_index(model)
                     string_key = str(key)
 
@@ -695,7 +695,7 @@ class WhooshSearchBackend(BaseSearchBackend):
             if possible_datetime:
                 date_values = possible_datetime.groupdict()
 
-                for dk, dv in date_values.items():
+                for dk, dv in list(date_values.items()):
                     date_values[dk] = int(dv)
 
                 return datetime(date_values['year'], date_values['month'], date_values['day'], date_values['hour'], date_values['minute'], date_values['second'])

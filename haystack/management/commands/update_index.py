@@ -34,7 +34,7 @@ def worker(bits):
     # will try to share the connection, which causes things to blow up.
     from django.db import connections
 
-    for alias, info in connections.databases.items():
+    for alias, info in list(connections.databases.items()):
         # We need to also tread lightly with SQLite, because blindly wiping
         # out connections (via ``... = {}``) destroys in-memory DBs.
         if not 'sqlite3' in info['ENGINE']:
@@ -145,7 +145,7 @@ class Command(LabelCommand):
 
         self.backends = options.get('using')
         if not self.backends:
-            self.backends = haystack_connections.connections_info.keys()
+            self.backends = list(haystack_connections.connections_info.keys())
 
         age = options.get('age', DEFAULT_AGE)
         start_date = options.get('start_date')
@@ -229,7 +229,7 @@ class Command(LabelCommand):
                 index = unified_index.get_index(model)
             except NotHandled:
                 if self.verbosity >= 2:
-                    print "Skipping '%s' - no index." % model
+                    print("Skipping '%s' - no index." % model)
                 continue
 
             if self.workers > 0:

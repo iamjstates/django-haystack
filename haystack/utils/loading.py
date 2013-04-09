@@ -208,7 +208,7 @@ class UnifiedIndex(object):
         self._built = True
 
     def collect_fields(self, index):
-        for fieldname, field_object in index.fields.items():
+        for fieldname, field_object in list(index.fields.items()):
             if field_object.document is True:
                 if field_object.index_fieldname != self.document_field:
                     raise SearchFieldError("All 'SearchIndex' classes must use the same '%s' fieldname for the 'document=True' field. Offending index is '%s'." % (self.document_field, index))
@@ -267,7 +267,7 @@ class UnifiedIndex(object):
         if not self._built:
             self.build()
 
-        return self.indexes.keys()
+        return list(self.indexes.keys())
 
     def get_index_fieldname(self, field):
         if not self._built:
@@ -288,7 +288,7 @@ class UnifiedIndex(object):
         if not self._built:
             self.build()
 
-        for fieldname, field_object in self.fields.items():
+        for fieldname, field_object in list(self.fields.items()):
             if fieldname != field:
                 continue
 
